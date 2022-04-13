@@ -55,6 +55,9 @@ class TimerButton extends StatefulWidget {
   ///If resetTimerOnPressed is true reset the timer when the button is pressed : default to true
   final bool resetTimerOnPressed;
 
+  ///timeUpFlag
+  final bool timeUpFlag;
+
   const TimerButton({
     Key? key,
     required this.label,
@@ -67,6 +70,7 @@ class TimerButton extends StatefulWidget {
     this.buttonType = ButtonType.RaisedButton,
     this.activeTextStyle,
     this.disabledTextStyle = const TextStyle(color: Colors.black45),
+    this.timeUpFlag = false,
   }) : super(key: key);
 
   @override
@@ -82,16 +86,18 @@ class _TimerButtonState extends State<TimerButton> {
   @override
   void initState() {
     super.initState();
+    timeUpFlag = widget.timeUpFlag;
     timeCounter = widget.timeOutInSeconds;
     _timerUpdate();
   }
 
   _timerUpdate() {
-    Timer(const Duration(seconds: aSec), () async {
+    if (!mounted) return;
+    Timer(const Duration(seconds: aSec), () {
       setState(() {
         timeCounter--;
       });
-      if (timeCounter != 0)
+      if (timeCounter > 0)
         _timerUpdate();
       else
         timeUpFlag = true;
